@@ -1,0 +1,26 @@
+{
+  "name": "maps-chat",
+  "version": "1.0.0",
+  "description": "A sample application using <google-map>, <mqtt-connection> and <geo-location>",
+  "main": "index.html",
+  "scripts": {
+    "test": "wct"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sandro-k/maps-chat.git"
+  },
+  "keywords": [
+    "polymer",
+    "google-maps",
+    "mqtt",
+    "mqtt-elements",
+    "goe-lcation"
+  ],
+  "author": "Sandro Kock <sandro.kock@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sandro-k/maps-chat/issues"
+  },
+  "homepage": "https://github.com/sandro-k/maps-chat#readme"
+}
