@@ -1,0 +1,30 @@
+{
+  "name": "maps-chat",
+  "description": "A sample application using <google-map>, <mqtt-connection> and <geo-location>",
+  "main": "index.html",
+  "authors": [
+    "Sandro Kock <sandro.kock@gmail.com>"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "polymer",
+    "google-maps",
+    "mqtt",
+    "mqtt-elements",
+    "goe-lcation"
+  ],
+  "homepage": "https://github.com/sandro-k/maps-chat",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "~1.2.1",
+    "mqtt-elements": "~0.0.4-beta",
+    "geo-location": "ebidel/geo-location#~1.0.1"
+  }
+}
