@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>chat-window-model-demo</title>
+  <script src="../bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+  <link rel="import" href="../elements/chat-window-model.html">
+  <link rel="import" href="../bower_components/paper-input/paper-input.html">
+  <link rel="import" href="../bower_components/paper-button/paper-button.html">
+
+</head>
+<body>
+<template is="dom-bind" id="demo">
+  <mqtt-connection url="ws://localhost:3005" client="{{client1}}" auto></mqtt-connection>
+  <mqtt-connection url="ws://localhost:3005" client="{{client2}}" auto></mqtt-connection>
+
+  <!--model 1-->
+  <chat-window-model id="model1" nextMessage="[[nextMessage1]]" self="[[self1]]" mqtt-client="[[client1]]" chat-partner="[[chatPartner1]]" messages="{{chat1Messages}}"></chat-window-model>
+
+  <template is="dom-repeate" items="[[chat1Messages]]" as="m">
+    <div>[[m.message]]</div>
+  </template>
+
+  <paper-input value="{{nextMessage1}}"></paper-input>
+  <paper-button on-tap="_send1" raised>Send1</paper-button>
+
+
+  <!--model 2-->
+  <chat-window-model id="model2" nextMessage="[[nextMessage2]]" self="[[self2]]" mqtt-client="[[client1]]" chat-partner="[[chatPartner2]]" messages="{{chat2Messages}}"></chat-window-model>
+
+  <template is="dom-repeate" items="[[chat2Messages]]" as="m">
+    <div>[[m.message]]</div>
+  </template>
+
+  <paper-input value="{{nextMessage2}}"></paper-input>
+  <paper-button on-tap="_send2" raised>Send2</paper-button>
+
+</template>
+<script>
+  var demo = document.querySelector("#demo");
+  demo.chatPartner1 = {"readTopic": "user1/read", "writeTopic": "user1/write"};
+  demo.self1 = {"readTopic": "user2/read", "writeTopic": "user2/write"};
+
+  demo.chatPartner2 = {"readTopic": "user2/read", "writeTopic": "user2/write"};
+  demo.self2 = {"readTopic": "user1/read", "writeTopic": "user1/write"};
+
+//  demo._send1 = function(){
+//    console.log("_send1", arguments);
+//  };
+//
+//  demo._send1 = function(){
+//    console.log("_send1", arguments);
+//  };
+
+  var publish = function(){
+    console.log("publish", arguments);
+    this.publishMessage();
+  };
+
+  window.addEventListener('WebComponentsReady', function(e) {
+    demo._send1 = publish.bind(demo.$.model1);
+    demo._send2 = publish.bind(demo.$.model2);
+  });
+
+
+
+
+</script>
+</body>
+</html>

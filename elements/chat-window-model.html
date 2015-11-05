@@ -1,0 +1,84 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/mqtt-elements/mqtt-elements.html">
+
+<dom-module id="chat-window-model">
+  <template>
+
+    <div>[[chatPartner.readTopic]]</div>
+    <div>[[lastReceiveMessage]]</div>
+    <mqtt-connection client="[[mqttClient]]">
+      <mqtt-subscription topic="[[chatPartner.readTopic]]"
+                         last-message="{{lastReceiveMessage}}"></mqtt-subscription>
+      <mqtt-publish id="publish" topic="[[chatPartner.writeTopic]]" payload="{{nextMessage}}"></mqtt-publish>
+    </mqtt-connection>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'chat-window-model',
+
+      properties: {
+
+        nextMessage: {
+          type: String,
+        },
+
+        lastReceiveMessage: {
+          type: Object,
+          readOnly: true,
+          observer: "_lastReceiveMessageChanged",
+        },
+
+        messages: {
+          type: Array,
+          value: function(){
+            return []
+          },
+          notify: true,
+        },
+
+        mqttClient: {
+          type: Object,
+        },
+
+        chatPartner: {
+          type: Object,
+          observer: "_chatPartnerChanged"
+        },
+
+        self: {
+          type: Object,
+        }
+
+      },
+
+      _chatPartnerChanged: function(chatPartner, old){
+        console.log("_chatPartnerChanged", chatPartner, old);
+      },
+
+      _lastReceiveMessageChanged: function (lastReceiveMessage) {
+        console.log("_lastReceiveMessageChanged", lastReceiveMessage);
+        this._addChatMessageToMessages(this._mqttMessageToChatMessage(lastReceiveMessage));
+      },
+
+      _mqttMessageToChatMessage: function (mqttMessage) {
+        return this._messageToChatMessage(mqttMessage.parsedPayload, this.chatPartner, false);
+      },
+
+      _messageToChatMessage: function(message, partner, fromMe){
+        return {time: new Date(), from: partner, message: message, fromMe: fromMe};
+      },
+
+      _addChatMessageToMessages: function(chatMessage){
+        this.push("messages", chatMessage);
+      },
+
+      publishMessage: function () {
+
+        this._addChatMessageToMessages(this._messageToChatMessage(this.nextMessage, this.self, true));
+        this.$.publish.publish();
+      },
+
+    });
+  </script>
+</dom-module>

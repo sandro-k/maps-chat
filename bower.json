@@ -25,6 +25,11 @@
   "dependencies": {
     "polymer": "~1.2.1",
     "mqtt-elements": "~0.0.4-beta",
-    "geo-location": "ebidel/geo-location#~1.0.1"
+    "geo-location": "ebidel/geo-location#~1.0.1",
+    "google-map": "GoogleWebComponents/google-map#~1.1.6",
+    "iron-flex-layout": "PolymerElements/iron-flex-layout#~1.0.5",
+    "paper-drawer-panel": "PolymerElements/paper-drawer-panel#~1.0.4",
+    "iron-localstorage": "PolymerElements/iron-localstorage#~1.0.4",
+    "paper-button": "PolymerElements/paper-button#~1.0.8"
   }
 }

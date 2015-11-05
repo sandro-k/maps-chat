@@ -1,0 +1,87 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+
+<dom-module id="chat-message">
+  <template>
+    <style>
+      :host {
+        display: block;
+        box-sizing: border-box;
+      }
+
+      .from {
+        font-size: 0.8em;
+      }
+
+      .content {
+        font-size: 1em;
+      }
+
+      .time {
+        font-size: 0.8em;
+
+      }
+
+      paper-material {
+        display: block;
+        box-sizing: border-box;
+        background: #dddddd;
+        margin-bottom: 1em;
+        margin-top: 1em;
+        margin-left: 0.1em;
+        margin-right: 48px;
+        padding: 1em;
+      }
+
+      :host[from-me] paper-material {
+        margin-left: 48px;
+        margin-right: 0.1em;
+        background: #cccccc;
+      }
+
+      :host[from-me] .message-wrapper {
+        @apply(--layout);
+        @apply(--layout-vertical);
+        @apply(--layout-end);
+      }
+    </style>
+
+    <paper-material elevation="2" animated>
+      <div class="message-wrapper">
+        <div class="from">{{message.from}}</div>
+        <div class="content">{{message.message}}</div>
+        <div class="time">{{_formatTime(message.time)}}</div>
+      </div>
+    </paper-material>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'chat-message',
+
+      properties: {
+
+        message: {
+          type: Object,
+        },
+
+      },
+
+      _formatTime: function (time) {
+        return time.getHours() + ":" + time.getMinutes() + ":" + time.getSeconds();
+      },
+
+      ready: function () {
+      },
+
+      attached: function () {
+      },
+
+      detached: function () {
+      },
+
+    });
+  </script>
+</dom-module>

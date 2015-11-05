@@ -1,0 +1,47 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="chat-message.html">
+
+<dom-module id="chat-window-ui">
+  <template>
+    <style>
+      :host {
+        display: block;
+        box-sizing: border-box;
+      }
+
+      .from-me {
+        background: rgba(125, 125, 0, 0.5);
+      }
+    </style>
+
+    <div>
+      <template is="dom-repeat" items="[[thread]]" as="t">
+        <chat-message from-me$="[[t.fromMe]]" message="[[t]]"></chat-message>
+      </template>
+    </div>
+
+
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'chat-window-ui',
+
+      properties: {
+
+        thread: {
+          type: Array,
+        },
+
+      },
+
+      ready: function() {},
+
+      attached: function() {},
+
+      detached: function() {},
+
+    });
+  </script>
+</dom-module>

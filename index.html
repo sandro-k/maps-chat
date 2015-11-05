@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Maps Chat</title>
+  <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+
+  <link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout.html">
+  <link rel="import" href="elements/maps-chat.html">
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+    }
+
+    maps-chat {
+      height: 100%;
+    }
+  </style>
+</head>
+<body unresolved class="fullbleed">
+  <!--<maps-chat url="ws://iot.eclipse.org:80/ws"></maps-chat>-->
+  <maps-chat url="ws://localhost:3005"></maps-chat>
+</body>
+</html>

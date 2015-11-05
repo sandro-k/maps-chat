@@ -1,0 +1,173 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/geo-location/geo-location.html">
+<link rel="import" href="../bower_components/google-map/google-map.html">
+<link rel="import" href="../bower_components/mqtt-elements/mqtt-elements.html">
+<link rel="import" href="../bower_components/iron-localstorage/iron-localstorage.html">
+
+<dom-module id="maps-chat">
+  <template>
+    <style>
+      :host {
+        display: block;
+        box-sizing: border-box;
+      }
+    </style>
+
+    <!--local storage-->
+    <iron-localstorage
+        name="maps-chat"
+        value="{{storage}}"
+        on-iron-localstorage-load-empty="_initializeDefaultStorage"></iron-localstorage>
+
+    <!--pub sub -->
+    <mqtt-connection url="[[url]]" auto>
+      <mqtt-subscription auto topic="maps/chat/6fa4b2947d578e8a3d84d6b427384c3f/user/#" number-of-messages="10" messages="{{userMessages}}" last-message="{{message}}"></mqtt-subscription>
+      <mqtt-subscription auto topic="maps/chat/6fa4b2947d578e8a3d84d6b427384c3f/chat/#"></mqtt-subscription>
+      <mqtt-publish topic="[[userTopic]]" payload="{{userPosition}}" auto></mqtt-publish>
+    </mqtt-connection>
+
+    <!--geo location-->
+    <geo-location high-accuracy watch-pos latitude="{{lat}}" longitude="{{lng}}" max-zoom="11"></geo-location>
+
+    <!--google map ui-->
+    <!--<google-map latitude="[[lat]]" longitude="[[lng]]" zoom="16">-->
+      <!--<google-map-marker latitude="[[lat]]" longitude="[[lng]]"></google-map-marker>-->
+      <!--<template is="dom-repeat" items="[[mapMarkers]]">-->
+        <!--<google-map-marker title="[[item.lat]]" latitude="[[item.lat]]" longitude="[[item.lng]]">-->
+          <!--<div>-->
+            <!--<span>[[item.lat]]</span>-->
+            <!--<span>[[item.lng]]</span>-->
+          <!--</div>-->
+        <!--</google-map-marker>-->
+      <!--</template>-->
+    <!--</google-map>-->
+
+    <div class="chat">
+      <template is="dom-repeat" items="[[mapMarkers]]">
+        <div>[[item.lng]]</div>
+      </template>
+    </div>
+
+
+    <!--<mqtt-connection client="[[mqttClient]]">-->
+      <!--<mqtt-publish></mqtt-publish>-->
+    <!--</mqtt-connection>-->
+
+    <!--<paper-drawer-panel>-->
+      <!--<paper-header-panel drawer>-->
+        <!--<paper-toolbar></paper-toolbar>-->
+        <!--<div> Drawer content... </div>-->
+      <!--</paper-header-panel>-->
+      <!--<paper-header-panel main>-->
+        <!--<paper-toolbar></paper-toolbar>-->
+        <!--<div> Main content... </div>-->
+      <!--</paper-header-panel>-->
+    <!--</paper-drawer-panel>-->
+
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'maps-chat',
+
+      properties: {
+
+        url: {
+          type: String
+        },
+
+        storage: {
+          type: Object
+        },
+
+        onlineUser: {
+          type: Object,
+          value: function(){
+            return {}
+          }
+        },
+
+        mapMarkers: {
+          type: Array,
+          value: function(){
+            return [];
+          }
+        },
+
+        userMessages: {
+          type: Array,
+        },
+
+        message: {
+          type: Object,
+        },
+
+        lat: {
+          type: Number
+        },
+
+        lng: {
+          type: Number
+        },
+
+        userPosition: {
+          type: String,
+          computed: "_computeUserPosition(lat, lng)"
+        },
+
+        userTopic: {
+          type: String,
+          computed: "_computeUserTopic(storage.id)"
+        },
+
+
+      },
+
+      observers: [
+          "_observeOnlineUser(userMessages, message)"
+      ],
+
+      ready: function() {},
+
+      attached: function() {},
+
+      detached: function() {},
+
+      _observeOnlineUser: function(userMessages, message){
+        console.log("_observeOnlineUser", message);
+        var topicParts  = message.topic.split("/");
+        // by definition the user userID is the last part of the topic
+        var userID = topicParts[topicParts.length - 1];
+        this.set(
+            "onlineUser."+ userID,
+            {
+              position: JSON.parse(message.parsedPayload)
+            }
+        );
+
+        this.push("mapMarkers", JSON.parse(message.parsedPayload));
+      },
+
+      _computeUserPosition: function(lat, lng){
+        return JSON.stringify({lat: lat, lng:lng});
+      },
+
+      _computeUserTopic: function(storageId){
+        return "maps/chat/6fa4b2947d578e8a3d84d6b427384c3f/user/location/" + storageId
+      },
+
+      _generateRandomID: function(){
+        return Math.random().toString(16).substr(2, 8) + Math.random().toString(16).substr(2, 8);
+      },
+
+      _initializeDefaultStorage: function(){
+        this.storage = {
+         id: this._generateRandomID(),
+         messages: []
+        }
+      }
+
+    });
+  </script>
+</dom-module>
