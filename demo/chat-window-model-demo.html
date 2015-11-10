@@ -5,64 +5,95 @@
   <title>chat-window-model-demo</title>
   <script src="../bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
   <link rel="import" href="../elements/chat-window-model.html">
+  <link rel="import" href="../elements/chat-window-ui.html">
   <link rel="import" href="../bower_components/paper-input/paper-input.html">
   <link rel="import" href="../bower_components/paper-button/paper-button.html">
 
 </head>
 <body>
 <template is="dom-bind" id="demo">
-  <mqtt-connection url="ws://localhost:3005" client="{{client1}}" auto></mqtt-connection>
-  <mqtt-connection url="ws://localhost:3005" client="{{client2}}" auto></mqtt-connection>
 
-  <!--model 1-->
-  <chat-window-model id="model1" nextMessage="[[nextMessage1]]" self="[[self1]]" mqtt-client="[[client1]]" chat-partner="[[chatPartner1]]" messages="{{chat1Messages}}"></chat-window-model>
+  <template id="bind" is="dom-repeat" items="[[chatPartner]]">
 
-  <template is="dom-repeate" items="[[chat1Messages]]" as="m">
-    <div>[[m.message]]</div>
+    <div>
+      {{item.self.user}} -> {{item.chatPartner.user}}
+    </div>
+
+    <mqtt-connection url="ws://localhost:3005" client="{{item.mqttClient}}" auto></mqtt-connection>
+
+    <chat-window-model id="model"
+                       messages="{{item.thread}}"
+                       self="[[item.self]]"
+                       next-message="[[item.nextMessage]]"
+                       mqtt-client="[[item.mqttClient]]"
+                       chat-partner="[[item.chatPartner]]"
+                       messages="{{item.chatMessages}}"></chat-window-model>
+
+    <chat-window-ui thread="[[item.thread]]"></chat-window-ui>
+
+    <paper-input value="{{item.nextMessage::change}}"></paper-input>
+
+    <paper-button target-model="[[item.$]]" on-tap="send" raised>Send from{{item.self.user}} to {{item.chatPartner.user}}</paper-button>
+
   </template>
-
-  <paper-input value="{{nextMessage1}}"></paper-input>
-  <paper-button on-tap="_send1" raised>Send1</paper-button>
-
-
-  <!--model 2-->
-  <chat-window-model id="model2" nextMessage="[[nextMessage2]]" self="[[self2]]" mqtt-client="[[client1]]" chat-partner="[[chatPartner2]]" messages="{{chat2Messages}}"></chat-window-model>
-
-  <template is="dom-repeate" items="[[chat2Messages]]" as="m">
-    <div>[[m.message]]</div>
-  </template>
-
-  <paper-input value="{{nextMessage2}}"></paper-input>
-  <paper-button on-tap="_send2" raised>Send2</paper-button>
 
 </template>
 <script>
   var demo = document.querySelector("#demo");
-  demo.chatPartner1 = {"readTopic": "user1/read", "writeTopic": "user1/write"};
-  demo.self1 = {"readTopic": "user2/read", "writeTopic": "user2/write"};
 
-  demo.chatPartner2 = {"readTopic": "user2/read", "writeTopic": "user2/write"};
-  demo.self2 = {"readTopic": "user1/read", "writeTopic": "user1/write"};
+  var createChatModel = function (self, chatPartner) {
+    return {
+      "self": {
+        "user": self,
+        "readTopic": self + "/read/#",
+        "writeTopic": self + "/write"
+      },
+      "chatPartner": {
+        "user": chatPartner,
+        "readTopic": chatPartner + "/write",
+        "writeTopic": chatPartner + "/read/" + self
+      },
+      "mqttClient": null,
+      "thread": [],
+      "chatMessages": [],
+      "nextMessage": ""
+    };
+  };
 
-//  demo._send1 = function(){
-//    console.log("_send1", arguments);
-//  };
-//
-//  demo._send1 = function(){
-//    console.log("_send1", arguments);
-//  };
+  demo.chatPartner = [];
 
-  var publish = function(){
+  demo.chatPartner.push(createChatModel("user1", "user2"));
+  demo.chatPartner.push(createChatModel("user1", "user3"));
+
+  demo.chatPartner.push(createChatModel("user2", "user1"));
+  demo.chatPartner.push(createChatModel("user2", "user3"));
+
+  demo.chatPartner.push(createChatModel("user3", "user1"));
+  demo.chatPartner.push(createChatModel("user3", "user2"));
+
+
+  var demo1 = createChatModel("user1", "user2");
+  var demo2 = createChatModel("user2", "user1");
+
+  demo.self1 = demo1[0];
+  demo.chatPartner1 = demo1[1];
+
+  demo.self2 = demo2[0];
+  demo.chatPartner2 = demo2[1];
+
+  var publish = function () {
     console.log("publish", arguments);
     this.publishMessage();
   };
 
-  window.addEventListener('WebComponentsReady', function(e) {
-    demo._send1 = publish.bind(demo.$.model1);
-    demo._send2 = publish.bind(demo.$.model2);
+  window.addEventListener('WebComponentsReady', function (e) {
+
+
+    demo.send = function(event){
+      console.log("send", event);
+    };
+
   });
-
-
 
 
 </script>

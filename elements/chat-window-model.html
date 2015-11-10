@@ -1,15 +1,17 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/mqtt-elements/mqtt-elements.html">
+<link rel="import" href="lodash-import.html">
 
 <dom-module id="chat-window-model">
   <template>
+    <!--<div>[[self]]</div>-->
+    <div>[[chatPartner.writeTopic]]</div>
 
-    <div>[[chatPartner.readTopic]]</div>
-    <div>[[lastReceiveMessage]]</div>
     <mqtt-connection client="[[mqttClient]]">
-      <mqtt-subscription topic="[[chatPartner.readTopic]]"
+      <mqtt-subscription topic="[[self.readTopic]]"
                          last-message="{{lastReceiveMessage}}"></mqtt-subscription>
-      <mqtt-publish id="publish" topic="[[chatPartner.writeTopic]]" payload="{{nextMessage}}"></mqtt-publish>
+
+      <mqtt-publish id="publish" topic="[[chatPartner.writeTopic]]" payload="[[nextMessage]]"></mqtt-publish>
     </mqtt-connection>
   </template>
 
@@ -25,7 +27,6 @@
 
         lastReceiveMessage: {
           type: Object,
-          readOnly: true,
           observer: "_lastReceiveMessageChanged",
         },
 
@@ -57,7 +58,6 @@
       },
 
       _lastReceiveMessageChanged: function (lastReceiveMessage) {
-        console.log("_lastReceiveMessageChanged", lastReceiveMessage);
         this._addChatMessageToMessages(this._mqttMessageToChatMessage(lastReceiveMessage));
       },
 
@@ -74,8 +74,7 @@
       },
 
       publishMessage: function () {
-
-        this._addChatMessageToMessages(this._messageToChatMessage(this.nextMessage, this.self, true));
+        this._addChatMessageToMessages(this._messageToChatMessage(this.nextMessage, this.self, true, this.self.user));
         this.$.publish.publish();
       },
 
