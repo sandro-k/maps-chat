@@ -20,7 +20,6 @@
 
       .time {
         font-size: 0.8em;
-
       }
 
       paper-material {
@@ -49,7 +48,7 @@
 
     <paper-material elevation="2" animated>
       <div class="message-wrapper">
-        <div class="from">{{message.from}}</div>
+        <div class="from">{{message.from.user}}</div>
         <div class="content">{{message.message}}</div>
         <div class="time">{{_formatTime(message.time)}}</div>
       </div>
@@ -66,20 +65,10 @@
         message: {
           type: Object,
         },
-
       },
 
       _formatTime: function (time) {
         return time.getHours() + ":" + time.getMinutes() + ":" + time.getSeconds();
-      },
-
-      ready: function () {
-      },
-
-      attached: function () {
-      },
-
-      detached: function () {
       },
 
     });
