@@ -20,10 +20,7 @@
         on-iron-localstorage-load-empty="_initializeDefaultStorage"></iron-localstorage>
 
     <!--pub sub -->
-    <mqtt-connection url="[[url]]" auto>
-      <mqtt-subscription auto topic="maps/chat/6fa4b2947d578e8a3d84d6b427384c3f/user/#" number-of-messages="10" messages="{{userMessages}}" last-message="{{message}}"></mqtt-subscription>
-      <mqtt-subscription auto topic="maps/chat/6fa4b2947d578e8a3d84d6b427384c3f/chat/#"></mqtt-subscription>
-      <mqtt-publish topic="[[userTopic]]" payload="{{userPosition}}" auto></mqtt-publish>
+    <mqtt-connection client="{{mqttClient}}" url="[[url]]" auto>
     </mqtt-connection>
 
     <!--geo location-->
