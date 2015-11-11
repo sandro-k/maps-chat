@@ -4,10 +4,8 @@
   <meta charset="UTF-8">
   <title>chat-window-model-demo</title>
   <script src="../bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
-  <link rel="import" href="../elements/chat-window-model.html">
-  <link rel="import" href="../elements/chat-window-ui.html">
-  <link rel="import" href="../bower_components/paper-input/paper-input.html">
-  <link rel="import" href="../bower_components/paper-button/paper-button.html">
+
+  <link rel="import" href="../elements/chat-window.html">
 
 </head>
 <body>
@@ -15,25 +13,10 @@
 
   <template id="bind" is="dom-repeat" items="[[chatPartner]]">
 
-    <div>
-      {{item.self.user}} -> {{item.chatPartner.user}}
-    </div>
-
-    <mqtt-connection url="ws://localhost:3005" client="{{item.mqttClient}}" auto></mqtt-connection>
-
-    <chat-window-model id="model"
-                       messages="{{item.thread}}"
-                       self="[[item.self]]"
-                       next-message="[[item.nextMessage]]"
-                       mqtt-client="[[item.mqttClient]]"
-                       chat-partner="[[item.chatPartner]]"
-                       messages="{{item.chatMessages}}"></chat-window-model>
-
-    <chat-window-ui thread="[[item.thread]]"></chat-window-ui>
-
-    <paper-input value="{{item.nextMessage::change}}"></paper-input>
-
-    <paper-button target-model="[[item.$]]" on-tap="send" raised>Send from{{item.self.user}} to {{item.chatPartner.user}}</paper-button>
+    <chat-window
+        mqtt-url="[[item.mqttUrl]]"
+        self="[[item.self]]"
+        chat-partner="[[item.chatPartner]]"></chat-window>
 
   </template>
 
@@ -53,41 +36,25 @@
         "readTopic": chatPartner + "/write",
         "writeTopic": chatPartner + "/read/" + self
       },
-      "mqttClient": null,
-      "thread": [],
-      "chatMessages": [],
-      "nextMessage": ""
+      "mqttUrl": "ws://localhost:3005"
     };
   };
 
   demo.chatPartner = [];
 
-  demo.chatPartner.push(createChatModel("user1", "user2"));
-  demo.chatPartner.push(createChatModel("user1", "user3"));
+//  var users = ["user1", "user2", "user3"];
+  var users = ["user1", "user2"];
 
-  demo.chatPartner.push(createChatModel("user2", "user1"));
-  demo.chatPartner.push(createChatModel("user2", "user3"));
+  users.forEach(function(user1){
+    users.forEach(function(user2){
+      if (user1 !== user2){
+        demo.chatPartner.push(createChatModel(user1, user2));
+      }
+    });
+  });
 
-  demo.chatPartner.push(createChatModel("user3", "user1"));
-  demo.chatPartner.push(createChatModel("user3", "user2"));
-
-
-  var demo1 = createChatModel("user1", "user2");
-  var demo2 = createChatModel("user2", "user1");
-
-  demo.self1 = demo1[0];
-  demo.chatPartner1 = demo1[1];
-
-  demo.self2 = demo2[0];
-  demo.chatPartner2 = demo2[1];
-
-  var publish = function () {
-    console.log("publish", arguments);
-    this.publishMessage();
-  };
 
   window.addEventListener('WebComponentsReady', function (e) {
-
 
     demo.send = function(event){
       console.log("send", event);
