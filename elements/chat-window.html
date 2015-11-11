@@ -1,0 +1,71 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+
+<link rel="import" href="chat-window-model.html">
+<link rel="import" href="chat-window-ui.html">
+
+<dom-module id="chat-window">
+  <template>
+    <style>
+      :host {
+        display: block;
+        box-sizing: border-box;
+      }
+    </style>
+
+    <mqtt-connection url="[[mqttUrl]]" client="{{mqttClient}}" auto></mqtt-connection>
+
+    <chat-window-model id="model"
+                       messages="{{thread}}"
+                       self="[[self]]"
+                       mqtt-client="[[mqttClient]]"
+                       chat-partner="[[chatPartner]]"></chat-window-model>
+
+
+    <paper-material elevation="2" animated>
+      <chat-window-ui thread="[[thread]]" on-new-chat-message="_sendNewChatMessage"></chat-window-ui>
+    </paper-material>
+
+  </template>
+
+  <script>
+
+    Polymer({
+      is: 'chat-window',
+
+      properties: {
+
+        self: {
+          type: Object,
+        },
+
+        chatPartner: {
+          type: Object,
+        },
+
+        mqttClient: {
+          type: Object,
+        },
+
+        thread: {
+          type: Array,
+        },
+
+        mqttUrl: {
+          type: String,
+        }
+
+      },
+
+      _sendNewChatMessage: function (event) {
+        this.$.model.nextMessage = event.detail.message;
+        this.$.model.publishMessage();
+      },
+
+
+    });
+
+  </script>
+</dom-module>

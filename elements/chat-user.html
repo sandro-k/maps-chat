@@ -1,0 +1,79 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/mqtt-elements/mqtt-elements.html">
+
+<dom-module id="chat-user">
+  <template>
+
+    <style>
+      :host {
+        display: block;
+        box-sizing: border-box;
+      }
+    </style>
+
+    <mqtt-connection url="ws://localhost:3005" options="[[mqttOptions]]" id="mqtt">
+      <mqtt-publish auto topic="[[statusTopic]]" payload="[[payload]]" retained qos="1"></mqtt-publish>
+    </mqtt-connection>
+
+  </template>
+
+  <script>
+
+    Polymer({
+      is: 'chat-user',
+
+      properties: {
+        user: {
+          type: String
+        },
+
+        appPrefix: {
+          type: String,
+          value: "maps/chat/6fa4b2947d578e8a3d84d6b427384c3f/status/"
+        },
+
+        statusTopic: {
+          type: String,
+          computed: "_computeStatusTopic(user, appPrefix)"
+        },
+
+        mqttOptions: {
+          type: Object,
+          computed: "_computeMqttOptions(statusTopic)",
+          observer: "_mqttOptionsChanged"
+        },
+
+        payload: {
+          type: String,
+          computed: "_computePayload(user)",
+        }
+
+      },
+
+      _computePayload: function(user){
+        return JSON.stringify({"user": user, "status": "online"});
+      },
+
+      _mqttOptionsChanged: function(mqttOptions){
+        this.$.mqtt.connect();
+      },
+
+      _computeStatusTopic: function(user, appPrefix){
+        return appPrefix + user;
+      },
+
+      _computeMqttOptions: function(statusTopic){
+        return {
+          will: {
+            topic: statusTopic,
+            qos: 1,
+            payload: "",
+            retain: true
+          }
+        };
+      },
+
+    });
+
+  </script>
+</dom-module>

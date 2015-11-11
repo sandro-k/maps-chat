@@ -1,0 +1,48 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/mqtt-elements/mqtt-elements.html">
+
+<dom-module id="chat-online-user">
+  <template>
+    <mqtt-connection client="[[mqttClient]]">
+      <mqtt-subscription on-mqtt-subscription-message="_updateUserStatus" topic="[[appPrefix]]"></mqtt-subscription>
+    </mqtt-connection>
+
+    <template is="dom-repeat" items="[[onlineUser]]">
+      <div>[[onlineUser]]</div>
+    </template>
+
+  </template>
+
+  <script>
+
+    Polymer({
+      is: 'chat-online-user',
+
+      properties: {
+
+        mqttClient: {
+          type: Object
+        },
+
+        onlineUser: {
+          type: Array,
+          value: function(){
+            return [];
+          }
+        },
+
+        appPrefix: {
+          type: String,
+          value: "maps/chat/6fa4b2947d578e8a3d84d6b427384c3f/status/+"
+        },
+
+      },
+
+      _updateUserStatus: function(event){
+        this.push("onlineUser", event.detail.parsedPayload);
+      }
+
+    });
+
+  </script>
+</dom-module>

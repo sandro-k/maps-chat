@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>chat-online-user-demo</title>
+  <script src="../bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+  <link rel="import" href="../elements/chat-online-user.html">
+</head>
+<body>
+<template id="demo" is="dom-bind">
+
+  <mqtt-connection client="{{mqttClient}}" url="ws://localhost:3005" auto>
+  </mqtt-connection>
+
+  <chat-online-user mqtt-client="[[mqttClient]]"></chat-online-user>
+
+</template>
+
+<script>
+  var demo = document.getElementById("demo");
+
+
+</script>
+</body>
+</html>

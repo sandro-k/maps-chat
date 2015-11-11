@@ -20,6 +20,10 @@
       </template>
     </div>
 
+    <paper-input value="{{nextMessage::change}}"></paper-input>
+
+    <paper-button on-tap="_sendMessage" raised>SEND</paper-button>
+
   </template>
 
   <script>
@@ -32,13 +36,14 @@
           type: Array,
         },
 
+        nextMessage: {
+          type: String,
+        },
       },
 
-      ready: function() {},
-
-      attached: function() {},
-
-      detached: function() {},
+      _sendMessage: function(event){
+        this.fire("new-chat-message", {message: this.nextMessage});
+      },
 
     });
   </script>

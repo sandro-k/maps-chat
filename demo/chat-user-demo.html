@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>chat-window-demo</title>
+  <script src="../bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+  <link rel="import" href="../elements/chat-user.html">
+</head>
+<body>
+<template id="demo" is="dom-bind">
+  <mqtt-connection url="ws://localhost:3005" auto>
+    <mqtt-subscription last-message="{{lastMessage}}" topic="maps/chat/6fa4b2947d578e8a3d84d6b427384c3f/status/#" qos="1"></mqtt-subscription>
+  </mqtt-connection>
+
+  <div>[[lastMessage.parsedPayload]]</div>
+
+  <chat-user user="user1"></chat-user>
+
+</template>
+
+<script>
+  var demo = document.getElementById("demo");
+
+
+</script>
+</body>
+</html>
