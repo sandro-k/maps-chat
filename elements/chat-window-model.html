@@ -4,9 +4,6 @@
 
 <dom-module id="chat-window-model">
   <template>
-    <!--<div>[[self]]</div>-->
-    <div>[[chatPartner.writeTopic]]</div>
-
     <mqtt-connection client="[[mqttClient]]">
       <mqtt-subscription topic="[[self.readTopic]]"
                          last-message="{{lastReceiveMessage}}"></mqtt-subscription>
@@ -54,7 +51,6 @@
       },
 
       _chatPartnerChanged: function(chatPartner, old){
-        console.log("_chatPartnerChanged", chatPartner, old);
       },
 
       _lastReceiveMessageChanged: function (lastReceiveMessage) {
