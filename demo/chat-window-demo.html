@@ -5,10 +5,14 @@
   <title>chat-window-demo</title>
   <script src="../bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
   <link rel="import" href="../elements/chat-window-ui.html">
+  <link rel="import" href="../bower_components/mqtt-elements/mqtt-connection.html">
 </head>
 <body>
 <template id="demo" is="dom-bind">
-  <chat-window-ui thread="[[thread]]"></chat-window-ui>
+
+  <mqtt-connection client="{{mqttClient}}" url="ws://locahost:3005"></mqtt-connection>
+
+  <chat-window-ui mqtt-client=[[mqttClient]] thread="[[thread]]"></chat-window-ui>
 </template>
 
 <script>

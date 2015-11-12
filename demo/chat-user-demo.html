@@ -14,12 +14,13 @@
 
   <div>[[lastMessage.parsedPayload]]</div>
 
-  <chat-user user="user1"></chat-user>
+  <chat-user user="[[user]]"></chat-user>
 
 </template>
 
 <script>
   var demo = document.getElementById("demo");
+  demo.user = Math.random().toString(16).substr(2, 8);
 
 
 </script>

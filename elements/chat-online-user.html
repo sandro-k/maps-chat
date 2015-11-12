@@ -3,13 +3,10 @@
 
 <dom-module id="chat-online-user">
   <template>
-    <mqtt-connection client="[[mqttClient]]">
-      <mqtt-subscription on-mqtt-subscription-message="_updateUserStatus" topic="[[appPrefix]]"></mqtt-subscription>
-    </mqtt-connection>
 
-    <template is="dom-repeat" items="[[onlineUser]]">
-      <div>[[onlineUser]]</div>
-    </template>
+    <mqtt-connection client="[[mqttClient]]">
+      <mqtt-subscription on-mqtt-subscription-message="_updateUserStatus" topic="[[statusTopic]]"></mqtt-subscription>
+    </mqtt-connection>
 
   </template>
 
@@ -20,12 +17,24 @@
 
       properties: {
 
+        self: {
+          type: String,
+        },
+
         mqttClient: {
           type: Object
         },
 
         onlineUser: {
+          type: Object,
+          value: function () {
+            return new Polymer.Collection([]);
+          }
+        },
+
+        onlineUserArray: {
           type: Array,
+          notify: true,
           value: function(){
             return [];
           }
@@ -33,13 +42,60 @@
 
         appPrefix: {
           type: String,
-          value: "maps/chat/6fa4b2947d578e8a3d84d6b427384c3f/status/+"
         },
+
+        statusTopic: {
+          type: String,
+          computed: "_computeStatusTopic(appPrefix)"
+        }
 
       },
 
-      _updateUserStatus: function(event){
-        this.push("onlineUser", event.detail.parsedPayload);
+      _computeStatusTopic: function(appPrefix){
+        return appPrefix + "status/+"
+      },
+
+      topicToKey: function (topic) {
+        return "#" + topic;
+      },
+
+      _setOnlineUserArray: function (arr) {
+        this.set("onlineUserArray", arr);
+      },
+
+      _mqttMessageToObject: function(mqttMessage){
+        return JSON.parse(mqttMessage.parsedPayload);
+      },
+
+      _addOnlineUser: function(mqttMessage){
+        var payload = this._mqttMessageToObject(mqttMessage);
+        if (payload && payload.user !== this.self){
+          this.onlineUser.setItem(this.topicToKey(mqttMessage.topic), payload);
+        }
+      },
+
+      _updateOnlineUser: function (detail) {
+        this._addOnlineUser(detail);
+        this._setOnlineUserArray(this.onlineUser.getItems());
+      },
+
+      _removeOnlineUser: function (mqttMessage) {
+        this.onlineUser.removeKey(this.topicToKey(mqttMessage.topic));
+      },
+
+      _removeUserFromOnline: function (detail) {
+        this._removeOnlineUser(detail);
+        this._setOnlineUserArray(this.onlineUser.getItems());
+      },
+
+      _updateUserStatus: function (event) {
+        if(event.detail.parsedPayload) {
+          this._updateOnlineUser(event.detail);
+        } else {
+          if(event.detail.parsedPayload === "") {
+            this._removeUserFromOnline(event.detail);
+          }
+        }
       }
 
     });

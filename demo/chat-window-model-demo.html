@@ -6,15 +6,17 @@
   <script src="../bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
 
   <link rel="import" href="../elements/chat-window.html">
+  <link rel="import" href="../bower_components/mqtt-elements/mqtt-connection.html">
 
 </head>
 <body>
 <template is="dom-bind" id="demo">
 
   <template id="bind" is="dom-repeat" items="[[chatPartner]]">
+    <mqtt-connection url="[[item.mqttUrl]]" client="{{item.mqttClient}}" auto></mqtt-connection>
 
     <chat-window
-        mqtt-url="[[item.mqttUrl]]"
+        mqtt-client="[[item.mqttClient]]"
         self="[[item.self]]"
         chat-partner="[[item.chatPartner]]"></chat-window>
 
@@ -36,6 +38,7 @@
         "readTopic": chatPartner + "/write",
         "writeTopic": chatPartner + "/read/" + self
       },
+      "mqttClient": null,
       "mqttUrl": "ws://localhost:3005"
     };
   };

@@ -7,19 +7,18 @@
   <link rel="import" href="../elements/chat-online-user.html">
 </head>
 <body>
-<template id="demo" is="dom-bind">
+<template is="dom-bind">
 
   <mqtt-connection client="{{mqttClient}}" url="ws://localhost:3005" auto>
   </mqtt-connection>
 
-  <chat-online-user mqtt-client="[[mqttClient]]"></chat-online-user>
+  <chat-online-user app-prefix="maps/chat/6fa4b2947d578e8a3d84d6b427384c3f/" online-user-array="{{onlineUserArray}}" mqtt-client="[[mqttClient]]"></chat-online-user>
+
+  <template is="dom-repeat" items="[[onlineUserArray]]">
+    <div>User: [[item.user]] -> [[item.status]]</div>
+  </template>
 
 </template>
 
-<script>
-  var demo = document.getElementById("demo");
-
-
-</script>
 </body>
 </html>

@@ -15,8 +15,6 @@
       }
     </style>
 
-    <mqtt-connection url="[[mqttUrl]]" client="{{mqttClient}}" auto></mqtt-connection>
-
     <chat-window-model id="model"
                        messages="{{thread}}"
                        self="[[self]]"
@@ -52,11 +50,6 @@
         thread: {
           type: Array,
         },
-
-        mqttUrl: {
-          type: String,
-        }
-
       },
 
       _sendNewChatMessage: function (event) {
