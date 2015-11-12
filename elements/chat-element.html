@@ -1,0 +1,72 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/mqtt-elements/mqtt-connection.html">
+<link rel="import" href="chat-window.html">
+<link rel="import" href="chat-online-user.html">
+<link rel="import" href="chat-user.html">
+
+
+<dom-module id="chat-element">
+  <template>
+
+    <style>
+      :host {
+        display: block;
+        box-sizing: border-box;
+      }
+    </style>
+
+    <mqtt-connection client="{{mqttClient}}" url="[[mqttUrl]]" auto>
+    </mqtt-connection>
+
+    <chat-online-user self="[[userName]]" app-prefix="[[appPrefix]]" online-user-array="{{onlineUserArray}}" mqtt-client="[[mqttClient]]"></chat-online-user>
+
+    <chat-user user="[[userName]]"></chat-user>
+
+    <template is="dom-repeat" items="[[onlineUserArray]]">
+      <div on-tap="_openChatWindow" data-user$="[[item.user]]">[[item.user]]</div>
+    </template>
+
+    <div id="chatWindows">
+
+    </div>
+
+  </template>
+
+  <script>
+
+    Polymer({
+      is: 'chat-element',
+
+      properties: {
+
+        userName: {
+          type: String,
+          value: ""
+        },
+
+        mqttClient: {
+          type: Object,
+        },
+
+        mqttUrl: {
+          type: String,
+        },
+
+        onlineUserArray: {
+          type: Array,
+        },
+
+        appPrefix: {
+          type: String
+        },
+
+      },
+
+      _openChatWindow: function(event){
+        console.log("_openChatWindow", event);
+      }
+
+    });
+
+  </script>
+</dom-module>

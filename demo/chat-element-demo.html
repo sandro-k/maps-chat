@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>chat-window-demo</title>
+  <script src="../bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+  <link rel="import" href="../elements/chat-element.html">
+</head>
+<body>
+
+<template id="demo" is="dom-bind">
+    <chat-element user-name="[[user]]" mqtt-url="[[mqttUrl]]" app-prefix="[[appPrefix]]"></chat-element>
+</template>
+
+<script>
+  var demo = document.getElementById("demo");
+  demo.user = Math.random().toString(16).substr(2, 8);
+  demo.appPrefix = "maps/chat/6fa4b2947d578e8a3d84d6b427384c3f/";
+  demo.mqttUrl = "ws://localhost:3005"
+
+</script>
+</body>
+</html>
