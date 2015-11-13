@@ -1,6 +1,10 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+
 <link rel="import" href="chat-message.html">
+<link rel="import" href="chat-window-ui-form.html">
 
 <dom-module id="chat-window-ui">
   <template>
@@ -20,10 +24,8 @@
         <chat-message from-me$="[[t.fromMe]]" message="[[t]]"></chat-message>
       </template>
     </div>
+    <chat-window-ui-form></chat-window-ui-form>
 
-    <paper-input value="{{nextMessage::change}}"></paper-input>
-
-    <paper-button on-tap="_sendMessage" raised>SEND</paper-button>
 
   </template>
 
@@ -37,14 +39,8 @@
           type: Array,
         },
 
-        nextMessage: {
-          type: String,
-        },
       },
 
-      _sendMessage: function(event){
-        this.fire("new-chat-message", {message: this.nextMessage});
-      },
 
     });
   </script>
