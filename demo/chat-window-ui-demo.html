@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>chat-window-demo</title>
+  <script src="../bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+  <link rel="import" href="../elements/chat-window-ui.html">
+</head>
+<body>
+
+<template id="demo" is="dom-bind">
+  <chat-window-ui thread="[[thread]]"></chat-window-ui>
+</template>
+
+<script>
+  var demo = document.getElementById("demo");
+  demo.thread = [];
+
+  demo.generateNewMessage = function (time, from, message, me) {
+    return {time: time, from: {user: from}, message: message, fromMe: me};
+  };
+
+  var now = new Date();
+  demo.thread.push(demo.generateNewMessage(now, "Foo", "Hey Bar how are you?", true));
+
+  demo.thread.push(demo.generateNewMessage(new Date(now.getTime() + 1000 * 60), "Bar", "Thanks Foo I am good. How are you?", false));
+
+  demo.thread.push(demo.generateNewMessage(new Date(now.getTime() + 1000 * 60 * 2), "Foo", "Thanks Bar I am fine.", true));
+
+
+</script>
+</body>
+</html>
