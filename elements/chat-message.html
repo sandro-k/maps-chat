@@ -1,5 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../bower_components/paper-styles/paper-styles.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 
 <dom-module id="chat-message">
@@ -8,10 +9,14 @@
       :host {
         display: block;
         box-sizing: border-box;
+        border: 1px solid #E0E0E0;
+        margin: 16px 0;
+        padding: 16px;
       }
 
       .from {
         font-size: 0.8em;
+        font-weight: bold;
       }
 
       .content {
@@ -40,19 +45,50 @@
       }
 
       :host[from-me] .message-wrapper {
+        @apply(--layout-end);
+      }
+
+      :host .message-wrapper > .content-wrapper {
+        margin-left: 16px;
+      }
+
+      :host[from-me] .message-wrapper > .content-wrapper {
         @apply(--layout);
         @apply(--layout-vertical);
         @apply(--layout-end);
+        margin-right: 16px;
       }
+
+
+      :host[from-me] .message-wrapper > .avatar-wrapper {
+        order: 2;
+      }
+
+      .message-wrapper {
+        @apply(--layout);
+        @apply(--layout-horizontal);
+        @apply(--paper-font-common-base);
+      }
+
+      .avatar {
+        height: 48px;
+        width: 48px;
+        border-radius: 24px;
+      }
+
     </style>
 
-    <paper-material elevation="2" animated>
-      <div class="message-wrapper">
+
+    <div class="message-wrapper ">
+      <div class="avatar-wrapper">
+        <img src="[[_computeUserPicture(message)]]" alt="user" class="avatar">
+      </div>
+      <div class="content-wrapper flex">
         <div class="from">{{message.from.user}}</div>
         <div class="content">{{message.message}}</div>
         <div class="time">{{_formatTime(message.time)}}</div>
       </div>
-    </paper-material>
+    </div>
 
   </template>
 
@@ -65,6 +101,13 @@
         message: {
           type: Object,
         },
+      },
+
+      _computeUserPicture: function(message){
+        if (message.from && message.from.user && message.from.user.pic){
+          return message.from.user.pic;
+        }
+        return "../img/photo.jpg";
       },
 
       _formatTime: function (time) {
