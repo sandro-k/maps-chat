@@ -10,7 +10,6 @@
       :host {
         display: block;
         box-sizing: border-box;
-        border: 1px solid #E0E0E0;
         margin: 16px 0;
       }
 
@@ -25,7 +24,7 @@
       .time {
         font-size: 0.8em;
       }
-      
+
       .avatar {
         width: 48px;
         height: 48px;
@@ -38,7 +37,6 @@
         height: 48px;
         border-radius: 50%;
       }
-
 
       :host[from-me] paper-item-body {
         margin-right: 16px;
@@ -70,20 +68,6 @@
       }
     </style>
 
-
-    <!--<div class="message-wrapper">-->
-      <!--<div class="avatar-wrapper">-->
-        <!--<img src="[[_computeUserPicture(message)]]" alt="user" class="avatar">-->
-      <!--</div>-->
-      <!--<div class="content-wrapper flex">-->
-        <!--<div class="from">{{message.from.user}}</div>-->
-        <!--<div class="content">{{message.message}}</div>-->
-        <!--<div class="time">{{_formatTime(message.time)}}</div>-->
-      <!--</div>-->
-    <!--</div>-->
-
-
-
     <paper-icon-item>
       <div class="avatar" item-icon>
         <img src="[[_computeUserPicture(message)]]" alt="user" class="avatar-img">
@@ -94,7 +78,6 @@
         <div third class="time">{{_formatTime(message.time)}}</div>
       </paper-item-body>
     </paper-icon-item>
-
   </template>
 
   <script>
@@ -115,8 +98,18 @@
         return "../img/photo.jpg";
       },
 
+      _timeWithPrefixZero: function(str){
+        if(str.length === 1){
+          return "0"+str;
+        }
+        return str;
+      },
+
       _formatTime: function (time) {
-        return time.getHours() + ":" + time.getMinutes() + ":" + time.getSeconds();
+        var sec = this._timeWithPrefixZero(time.getSeconds().toString());
+        var min = this._timeWithPrefixZero(time.getMinutes().toString());
+        var hours = this._timeWithPrefixZero(time.getHours().toString());
+        return hours + ":" + min + ":" + sec;
       },
 
     });
