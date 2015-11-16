@@ -2,6 +2,7 @@
 <link rel="import" href="../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../bower_components/paper-styles/paper-styles.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/paper-item/all-imports.html">
 
 <dom-module id="chat-message">
   <template>
@@ -11,12 +12,10 @@
         box-sizing: border-box;
         border: 1px solid #E0E0E0;
         margin: 16px 0;
-        padding: 16px;
       }
 
       .from {
         font-size: 0.8em;
-        font-weight: bold;
       }
 
       .content {
@@ -26,69 +25,75 @@
       .time {
         font-size: 0.8em;
       }
-
-      paper-material {
-        display: block;
-        box-sizing: border-box;
-        background: #dddddd;
-        margin-bottom: 1em;
-        margin-top: 1em;
-        margin-left: 0.1em;
-        margin-right: 48px;
-        padding: 1em;
-      }
-
-      :host[from-me] paper-material {
-        margin-left: 48px;
-        margin-right: 0.1em;
-        background: #cccccc;
-      }
-
-      :host[from-me] .message-wrapper {
-        @apply(--layout-end);
-      }
-
-      :host .message-wrapper > .content-wrapper {
-        margin-left: 16px;
-      }
-
-      :host[from-me] .message-wrapper > .content-wrapper {
-        @apply(--layout);
-        @apply(--layout-vertical);
-        @apply(--layout-end);
-        margin-right: 16px;
-      }
-
-
-      :host[from-me] .message-wrapper > .avatar-wrapper {
-        order: 2;
-      }
-
-      .message-wrapper {
-        @apply(--layout);
-        @apply(--layout-horizontal);
-        @apply(--paper-font-common-base);
-      }
-
+      
       .avatar {
-        height: 48px;
         width: 48px;
-        border-radius: 24px;
+        height: 48px;
+        border-radius: 50%;
+        overflow: hidden;
+        background: #ccc;
+      }
+      .avatar-img {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+      }
+
+
+      :host[from-me] paper-item-body {
+        margin-right: 16px;
+        margin-left: 0;
+        @apply(--layout-end);
+      }
+
+      :host paper-item-body {
+        margin-left: 16px;
+        margin-right: 0;
+      }
+
+      :host /deep/ .content-icon {
+        width: 48px!important;
+      }
+
+      :host[from-me] /deep/ .content-icon {
+        order: 2;
       }
 
     </style>
 
+    <style is="custom-style">
+      :root {
+        --paper-item-body-secondary: {
+          font-size: 1em;
+          white-space: normal;
+        }
+      }
+    </style>
 
-    <div class="message-wrapper ">
-      <div class="avatar-wrapper">
-        <img src="[[_computeUserPicture(message)]]" alt="user" class="avatar">
+
+    <!--<div class="message-wrapper">-->
+      <!--<div class="avatar-wrapper">-->
+        <!--<img src="[[_computeUserPicture(message)]]" alt="user" class="avatar">-->
+      <!--</div>-->
+      <!--<div class="content-wrapper flex">-->
+        <!--<div class="from">{{message.from.user}}</div>-->
+        <!--<div class="content">{{message.message}}</div>-->
+        <!--<div class="time">{{_formatTime(message.time)}}</div>-->
+      <!--</div>-->
+    <!--</div>-->
+
+
+
+    <paper-icon-item>
+      <div class="avatar" item-icon>
+        <img src="[[_computeUserPicture(message)]]" alt="user" class="avatar-img">
       </div>
-      <div class="content-wrapper flex">
+      <paper-item-body three-line>
         <div class="from">{{message.from.user}}</div>
-        <div class="content">{{message.message}}</div>
-        <div class="time">{{_formatTime(message.time)}}</div>
-      </div>
-    </div>
+        <div secondary class="content">{{message.message}}</div>
+        <div third class="time">{{_formatTime(message.time)}}</div>
+      </paper-item-body>
+    </paper-icon-item>
 
   </template>
 
