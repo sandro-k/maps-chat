@@ -1,5 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/mqtt-elements/mqtt-connection.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="chat-window.html">
 <link rel="import" href="chat-online-user.html">
 <link rel="import" href="chat-user.html">
@@ -13,6 +15,18 @@
         display: block;
         box-sizing: border-box;
       }
+
+      .user-avatar {
+        height: 68px;
+        width: 68px;
+        border-radius: 50%;
+      }
+
+      .user-card {
+        @apply(--layout-vertical);
+        @apply(--layout-center);
+
+      }
     </style>
 
     <mqtt-connection client="{{mqttClient}}" url="[[mqttUrl]]" auto>
@@ -23,10 +37,26 @@
     <chat-user user="[[userName]]"></chat-user>
 
     <template is="dom-repeat" items="[[onlineUserArray]]">
-      <div on-tap="_openChatWindow" data-user$="[[item.user]]">[[item.user]]</div>
+      <paper-card on-tap="_openChatWindow">
+        <div class="card-content">
+          <div class="user-card">
+            <img class="user-avatar" src="[[item.img]]" alt="">
+            <paper-item>[[item.user]]</paper-item>
+          </div>
+       </div>
+      </paper-card>
     </template>
 
     <div id="chatWindows">
+
+      <template is="dom-repeat" items="[[chatsArray]]" as="chat">
+        <chat-window
+            mqtt-client="[[mqttClient]]"
+            thread="[[chat.thread]]"
+            self="[[chat.self]]"
+            chat-partner="[[chat.chatPartner]]"></chat-window>
+      </template>
+
 
     </div>
 
@@ -60,11 +90,60 @@
           type: String
         },
 
+        chatsCollection: {
+          type: Object,
+          value: function(){
+            return Polymer.Collection([]);
+          }
+        },
+
+        chatsArray: {
+          type: Array,
+          value: function(){
+            return [];
+          }
+
+        }
+
       },
 
       _openChatWindow: function(event){
-        console.log("_openChatWindow", event);
-      }
+        this.push("chats", this._createChatModel(this.userName, event.model.item.user));
+      },
+
+      _setChatsArray: function(arr){
+        this.set("chatsArray", arr);
+      },
+
+      _addChat: function(chatModel){
+        this.chatsCollection.setItem(this._chatModelToKey(chatModel), chatModel);
+      },
+
+      _openOrAddChat: function(chatModel){
+        this.chatsCollection
+      },
+
+      _chatModelToKey: function(chatModel){
+        return "#" + chatModel.chatPartner.user;
+      },
+
+      _createChatModel: function (self, chatPartner) {
+      return {
+        "self": {
+          "user": self,
+          "readTopic": self + "/read/#",
+          "writeTopic": self + "/write"
+        },
+        "chatPartner": {
+          "user": chatPartner,
+          "readTopic": chatPartner + "/write",
+          "writeTopic": chatPartner + "/read/" + self
+        },
+        "mqttClient": null,
+        "thread": [],
+        "mqttUrl": this.mqttUrl
+      };
+    },
 
     });
 
