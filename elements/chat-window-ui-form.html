@@ -1,0 +1,76 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/iron-a11y-keys-behavior/iron-a11y-keys-behavior.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+
+
+<dom-module id="chat-window-ui-form">
+  <template>
+
+    <style>
+      :host {
+        display: block;
+      }
+
+      .form-wrapper {
+        padding: 16px 8px;
+        @apply(--layout-horizontal);
+      }
+
+      paper-input {
+        @apply(--layout-flex);
+        margin-right: 16px;
+      }
+    </style>
+
+    <div class="form-wrapper">
+      <paper-input placeholder="Write a message" value="{{nextMessage::change}}"></paper-input>
+      <paper-fab icon="send" on-tap="_sendMessage"></paper-fab>
+    </div>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'chat-window-ui-form',
+
+      behaviors: [
+        Polymer.IronA11yKeysBehavior
+      ],
+
+      properties: {
+
+        nextMessage: {
+          type: String,
+          value: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci amet assumenda at beatae, consectetur culpa dicta dolores error expedita fuga inventore molestiae natus praesentium provident quibusdam recusandae rerum soluta voluptatibus?"
+        },
+
+        boundKeys: {
+          type: Array,
+          value: function() {
+            return Object.keys(this.keyBindings).join(' ').split(' ');
+          }
+        },
+
+      },
+
+      keyBindings: {
+        'enter': '_sendMessage'
+      },
+
+      _sendMessage: function (event) {
+        if (this.nextMessage && this.nextMessage.length > 0){
+          this.fire("new-chat-message", {message: this.nextMessage});
+          this._clearMessageInput();
+        }
+      },
+
+      _clearMessageInput: function(){
+        this.set("nextMessage", "");
+      }
+
+    });
+  </script>
+</dom-module>
