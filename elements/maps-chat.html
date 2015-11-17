@@ -132,7 +132,6 @@
       detached: function() {},
 
       _observeOnlineUser: function(userMessages, message){
-        console.log("_observeOnlineUser", message);
         var topicParts  = message.topic.split("/");
         // by definition the user userID is the last part of the topic
         var userID = topicParts[topicParts.length - 1];
